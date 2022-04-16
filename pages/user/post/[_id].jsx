@@ -4,6 +4,9 @@ import UserRoute from "../../../components/UserRoute/UserRoute";
 import PostsForm from "../../../components/Form/PostsForm";
 import axios from "axios";
 import {toast} from "react-toastify";
+import { ref, getDownloadURL, uploadBytesResumable, getStorage, deleteObject } from "firebase/storage";
+import { storage } from "../../../components/firebase/Config";
+
 const EditPost = () => {
     const [post, setPost] = useState({});
     const [content, setContent] = useState("");
