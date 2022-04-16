@@ -40,7 +40,7 @@ const EditPost = () => {
             console.log(error);
         }
     }
-    const handleDocument = (e, filename) => {
+    const handleDocument = (e) => {
         setUploading(true);
         if (filename === "") {
             updateImage(e);

@@ -72,6 +72,27 @@ const dashboard = () => {
     }
 
     const handleDocument = (e) => {
+        setUploading(true);
+        if (filename === "") {
+            updateImage(e);
+        } else {
+            //Create a reference to the file to delete
+            const desertRef = ref(storage, `Blogs/${filename}`);
+            // Delete the file
+            deleteObject(desertRef).then(() => {
+                // File deleted successfully
+                // toast.error("File Deleted From Firebase");
+                setFilename("");
+                setImage("");
+                updateImage(e);
+            }).catch((error) => {
+                // Uh-oh, an error occurred!
+                toast.error("Image not removed from Firebase");
+                setUploading(false);
+            });
+        }
+    }
+    const updateImage = (e) => {
         const file = e.target.files[0];
         const formData = new FormData();
         formData.append("document", file);
@@ -81,12 +102,12 @@ const dashboard = () => {
         const extension = filename.split('.').pop();
         if (extension != "png" && extension != "PNG" && extension != "jpg" && extension != "JPG" && extension != "jpeg" && extension != "JPEG" && extension != "tiff" && extension != "TIFF") {
             toast.error("Only PNG, JPG, JPEG and TIFF are allowed. Try to re-upload");
+            setUploading(false);
         } else {
             handleImage(file);
         }
     }
     const handleImage = (file) => {
-        setUploading(true);
         if (!file){
             toast.error("There is no file");
             setUploading(false);
