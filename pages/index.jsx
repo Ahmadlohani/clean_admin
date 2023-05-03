@@ -17,11 +17,10 @@ const index = () => {
 			toast.error("Please fill mandatory fields");
 			return;
 		}
-		console.log(email, password);
 		SetLoading(true);
 		if (
-			email === process.env.ADMIN_ID &&
-			password === process.env.ADMIN_PASSWORD
+			email == process.env.ADMIN_ID &&
+			password == process.env.ADMIN_PASSWORD
 		) {
 			handleData(email);
 		} else {
