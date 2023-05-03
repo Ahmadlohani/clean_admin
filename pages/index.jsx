@@ -18,10 +18,7 @@ const index = () => {
 			return;
 		}
 		SetLoading(true);
-		if (
-			email == process.env.ADMIN_ID &&
-			password == process.env.ADMIN_PASSWORD
-		) {
+		if (email == "admin" && password == "pass") {
 			handleData(email);
 		} else {
 			toast.error("Invalid Credentials");
