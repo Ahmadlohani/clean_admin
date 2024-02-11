@@ -6,6 +6,7 @@ import {
 	TextField,
 	Typography,
 } from "@mui/material";
+import axios from "axios";
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -31,10 +32,14 @@ export default function Login() {
 				return;
 			}
 			setLoading(true);
-			if (
-				details.username === process.env.NEXT_USERNAME &&
-				details.password === process.env.NEXT_PASSWORD
-			) {
+			const { data } = await axios.post(
+				process.env.NEXT_PUBLIC_API_URL + "auth",
+				{
+					username: details.username,
+					pswd: details.password,
+				}
+			);
+			if (data.success) {
 				Cookies.set("clean_admin_auth", "admin", {
 					expires: 7,
 				});

@@ -7,7 +7,6 @@ import {
 	Typography,
 } from "@mui/material";
 import React from "react";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -62,14 +61,12 @@ const CityPromo = ({ handleChange, handleSubmit, detail }) => {
 						</Box>
 						<Box>
 							<LocalizationProvider dateAdapter={AdapterDayjs}>
-								<DemoContainer components={["DatePicker"]}>
-									<DatePicker
-										label="Promo Date"
-										sx={{ width: "100%" }}
-										value={detail.promoDate}
-										onChange={(e) => handleChange("promoDate", e)}
-									/>
-								</DemoContainer>
+								<DatePicker
+									label="Promo Date"
+									sx={{ width: "100%" }}
+									value={detail.promoDate}
+									onChange={(e) => handleChange("promoDate", e)}
+								/>
 							</LocalizationProvider>
 						</Box>
 						<Button
