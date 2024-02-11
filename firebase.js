@@ -5,13 +5,13 @@ import { getStorage } from "firebase/storage";
 import { getDatabase } from "firebase/database";
 
 const firebaseConfig = {
-	apiKey: process.env.NEXT_PUBLIC_APIKEY,
-	authDomain: process.env.NEXT_PUBLIC_AUTHDOMAIN,
-	projectId: process.env.NEXT_PUBLIC_PROJECTID,
-	storageBucket: process.env.NEXT_PUBLIC_STORAGEBUCKET,
-	messagingSenderId: process.env.NEXT_PUBLIC_MESSAGINGSENDERID,
-	appId: process.env.NEXT_PUBLIC_APPID,
-	measurementId: process.env.NEXT_PUBLIC_MEASUREMENTID,
+	apiKey: process.env.NEXT_APIKEY,
+	authDomain: process.env.NEXT_AUTHDOMAIN,
+	projectId: process.env.NEXT_PROJECTID,
+	storageBucket: process.env.NEXT_STORAGEBUCKET,
+	messagingSenderId: process.env.NEXT_MESSAGINGSENDERID,
+	appId: process.env.NEXT_APPID,
+	measurementId: process.env.NEXT_MEASUREMENTID,
 };
 
 export const app = initializeApp(firebaseConfig, "clean-task");
