@@ -2,7 +2,10 @@ export default async function auth(req, res) {
 	if (req.method === "POST") {
 		const { username, pswd } = req.body;
 		try {
-			if (username === "cleanadmin" && pswd === "cleanadminpass") {
+			if (
+				username === process.env.ADMIN_USER &&
+				pswd === process.env.ADMIN_PASS
+			) {
 				return res.json({ success: true });
 			} else {
 				return res.json({

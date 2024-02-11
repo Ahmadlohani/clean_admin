@@ -1,7 +1,5 @@
 import axios from "axios";
 
-const secretToken = "b775be48-a708-403a-a414-e77c2ab4e503";
-
 export default async function sendEmail(req, res) {
 	if (req.method === "POST") {
 		const { From, To, Subject, TextBody, MessageStream } = req.body;
@@ -20,7 +18,7 @@ export default async function sendEmail(req, res) {
 					headers: {
 						Accept: "application/json",
 						"Content-Type": "application/json",
-						"X-Postmark-Server-Token": secretToken,
+						"X-Postmark-Server-Token": process.env.POSTMARK_SECRET,
 					},
 				}
 			);
