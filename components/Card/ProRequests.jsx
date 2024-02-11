@@ -100,7 +100,7 @@ export default function ProRequests({ data, handleAccept }) {
 				MessageStream: "outbound",
 			};
 			const { data } = await axios.post(
-				process.env.NEXT_API_URL + "sendEmail",
+				process.env.NEXT_PUBLIC_API_URL + "sendEmail",
 				body,
 				{
 					headers: {

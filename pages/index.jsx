@@ -32,8 +32,8 @@ export default function Login() {
 			}
 			setLoading(true);
 			if (
-				details.username === process.env.username &&
-				details.password === process.env.password
+				details.username === process.env.NEXT_PUBLIC_USERNAME &&
+				details.password === process.env.NEXT_PUBLIC_PASSWORD
 			) {
 				Cookies.set("clean_admin_auth", "admin", {
 					expires: 7,
