@@ -103,7 +103,9 @@ export default function CustomerAccounts({ data }) {
 													{column.id === "name" ? (
 														value
 													) : column.id === "action" ? (
-														<Link href={`/dashboard/BookingDetail/${value}`}>
+														<Link
+															href={`/dashboard/Accounts/AccountDetail/${value}`}
+														>
 															<Button
 																variant="contained"
 																style={{

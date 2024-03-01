@@ -65,9 +65,10 @@ export default function AppDrawer(props) {
 				justifyContent={"center"}
 				alignItems={"center"}
 				margin={1.5}
+				bgcolor={"#ffffff"}
 			>
 				<Link href={"/"}>
-					<img src={"/images/logo.png"} alt="Logo" width={150} height={40} />
+					<img src={"/images/logo.png"} alt="Logo" width={150} height={30} />
 				</Link>
 			</Box>
 			<Divider sx={{ backgroundColor: "white" }} />

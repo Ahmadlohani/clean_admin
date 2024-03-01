@@ -66,7 +66,7 @@ const NewProRequests = () => {
 		try {
 			const proRef = doc(db, "Users", docId);
 			const request = {
-				status: deleteField(),
+				status: "verified",
 				pswd: deleteField(),
 			};
 			await sendEmailVerification(auth.currentUser);

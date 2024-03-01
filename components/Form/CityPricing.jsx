@@ -20,6 +20,41 @@ const CityPricing = ({ handleChange, handleSubmit, detail }) => {
 					>
 						<TextField
 							id="outlined-basic"
+							label="City *"
+							variant="outlined"
+							fullWidth
+							sx={{ my: 1 }}
+							value={detail.city}
+							onChange={(e) => handleChange("city", e.target.value)}
+						/>
+						<TextField
+							id="outlined-basic"
+							label="Suburb *"
+							variant="outlined"
+							fullWidth
+							sx={{ my: 1 }}
+							value={detail.suburb}
+							onChange={(e) => handleChange("suburb", e.target.value)}
+						/>
+					</Box>
+					<TextField
+						id="outlined-basic"
+						label="Postal Code *"
+						variant="outlined"
+						fullWidth
+						sx={{ my: 1 }}
+						inputProps={{ type: "number" }}
+						value={detail.postal}
+						onChange={(e) => handleChange("postal", e.target.value)}
+					/>
+					<Box
+						display={"flex"}
+						justifyContent={"center"}
+						alignItems={"center"}
+						gap={1}
+					>
+						<TextField
+							id="outlined-basic"
 							label="One Bedroom Price *"
 							variant="outlined"
 							fullWidth

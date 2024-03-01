@@ -7,23 +7,28 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import { Avatar, Button, Typography } from "@mui/material";
+import { Avatar, Box, Button, Typography } from "@mui/material";
 import { CheckCircle, Person, PictureAsPdf } from "@mui/icons-material";
+import { useRouter } from "next/router";
 
 const columns = [
-	{ id: "image", label: "Image", minWidth: 170 },
+	{ id: "image", label: "Image", minWidth: 100 },
 	{ id: "name", label: "Name", minWidth: 170 },
 	{ id: "email", label: "Email", minWidth: 200 },
-	{ id: "phone", label: "Phone", minWidth: 200 },
-	{ id: "residence", label: "Residence", minWidth: 200 },
-	{ id: "id", label: "ID/Passport", minWidth: 200 },
-	{ id: "workPermit", label: "Work Permit", minWidth: 200 },
+	{ id: "phone", label: "Phone", minWidth: 140 },
+	{ id: "docs", label: "Docs", minWidth: 150 },
 	{ id: "status", label: "Status", minWidth: 100 },
+	{ id: "action", label: "Action", minWidth: 100 },
 ];
 
-export default function Professional({ data }) {
+export default function Professional({
+	data,
+	handleSuspend,
+	handleActivate,
+	handleDelete,
+}) {
+	const route = useRouter();
 	function createData(
-		key,
 		image,
 		status,
 		name,
@@ -31,23 +36,21 @@ export default function Professional({ data }) {
 		phone,
 		residence,
 		id,
-		workPermit
+		workPermit,
+		action
 	) {
 		return {
-			key,
 			image,
 			status,
 			name,
 			email,
 			phone,
-			residence,
-			id,
-			workPermit,
+			docs: { residence, id, workPermit },
+			action,
 		};
 	}
 	const row = data?.map((item) =>
 		createData(
-			item.key,
 			item.image,
 			item.status,
 			item.name,
@@ -55,7 +58,8 @@ export default function Professional({ data }) {
 			item.phone,
 			item.residence,
 			item.id,
-			item.workPermit
+			item.workPermit,
+			item.key
 		)
 	);
 	const rows = row;
@@ -111,33 +115,122 @@ export default function Professional({ data }) {
 														)
 													) : column.id === "phone" ? (
 														"+27-" + value
-													) : column.id === "residence" ||
-													  column.id === "id" ||
-													  column.id === "workPermit" ? (
-														<a href={value} target="blank">
-															<Button
-																size="small"
-																variant="contained"
-																startIcon={<PictureAsPdf />}
-																sx={{
-																	color: "red",
-																	backgroundColor: "#ffffff",
-																	"&:hover": {
+													) : column.id === "docs" ? (
+														<Box
+															display={"flex"}
+															flexDirection={"column"}
+															gap={1}
+														>
+															<a href={value.id} target="blank">
+																<Button
+																	size="small"
+																	variant="contained"
+																	startIcon={<PictureAsPdf />}
+																	sx={{
+																		color: "red",
 																		backgroundColor: "#ffffff",
-																	},
-																}}
-															>
-																{column.id.toUpperCase()}
-															</Button>
-														</a>
+																		"&:hover": {
+																			backgroundColor: "#ffffff",
+																		},
+																	}}
+																>
+																	ID
+																</Button>
+															</a>
+															<a href={value.residence} target="blank">
+																<Button
+																	size="small"
+																	variant="contained"
+																	startIcon={<PictureAsPdf />}
+																	sx={{
+																		color: "red",
+																		backgroundColor: "#ffffff",
+																		"&:hover": {
+																			backgroundColor: "#ffffff",
+																		},
+																	}}
+																>
+																	Residence
+																</Button>
+															</a>
+															<a href={value.workPermit} target="blank">
+																<Button
+																	size="small"
+																	variant="contained"
+																	startIcon={<PictureAsPdf />}
+																	sx={{
+																		color: "red",
+																		backgroundColor: "#ffffff",
+																		"&:hover": {
+																			backgroundColor: "#ffffff",
+																		},
+																	}}
+																>
+																	Work Permit
+																</Button>
+															</a>
+														</Box>
 													) : column.id === "status" ? (
-														value ? (
+														value === "suspended" ? (
 															<Typography color={"red"} variant="p">
-																{value.toUpperCase()}
+																suspended
+															</Typography>
+														) : value === "requested" ? (
+															<Typography color={"red"} variant="p">
+																unverified
 															</Typography>
 														) : (
-															<CheckCircle />
+															<Typography color={"green"} variant="p">
+																verified
+															</Typography>
 														)
+													) : column.id === "action" ? (
+														<Box display={"flex"} gap={1}>
+															<Button
+																variant="contained"
+																color="primary"
+																size="small"
+																sx={{ textTransform: "none" }}
+																onClick={() =>
+																	route.push(
+																		"/dashboard/professionals/ViewDetail/" +
+																			value
+																	)
+																}
+															>
+																View
+															</Button>
+															{row.status === "suspended" ? (
+																<Button
+																	variant="contained"
+																	color="success"
+																	size="small"
+																	sx={{ textTransform: "none" }}
+																	onClick={() => handleActivate(value)}
+																>
+																	Activate
+																</Button>
+															) : (
+																<Button
+																	variant="contained"
+																	color="warning"
+																	size="small"
+																	sx={{ textTransform: "none" }}
+																	onClick={() => handleSuspend(value)}
+																>
+																	Suspend
+																</Button>
+															)}
+															<Button
+																variant="contained"
+																color="error"
+																size="small"
+																sx={{ textTransform: "none" }}
+																onClick={() => handleDelete(value)}
+															>
+																Delete
+															</Button>
+														</Box>
 													) : (
 														value
 													)}

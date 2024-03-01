@@ -2,14 +2,18 @@ import AppDrawer from "../../../components/AppDrawer/AppDrawer";
 import { Box, Grid, Typography } from "@mui/material";
 import {
 	collection,
+	deleteDoc,
+	doc,
 	onSnapshot,
 	orderBy,
 	query,
+	updateDoc,
 	where,
 } from "firebase/firestore";
 import { db } from "../../../firebase";
 import { useEffect, useState } from "react";
 import Professional from "../../../components/Card/Professional";
+import { toast } from "react-toastify";
 
 const AppProfessionals = () => {
 	const [users, setUsers] = useState(null);
@@ -37,6 +41,55 @@ const AppProfessionals = () => {
 			}
 			setUsers(items);
 		});
+	};
+	const handleDelete = async (id) => {
+		try {
+			const confirm = window.confirm("Are you sure you want to delete user?");
+			if (!confirm) return;
+			setLoading(true);
+			const docRef = doc(db, "Users", id);
+			await deleteDoc(docRef);
+			setLoading(false);
+			toast.success("User deleted");
+		} catch (error) {
+			setLoading(false);
+			toast.error("Error deleting user");
+			console.log(error);
+		}
+	};
+	const handleActivate = async (id) => {
+		try {
+			const confirm = window.confirm("Are you sure you want to activate?");
+			if (!confirm) return;
+			setLoading(true);
+			const docRef = doc(db, "Users", id);
+			await updateDoc(docRef, {
+				status: "verified",
+			});
+			setLoading(false);
+			toast.success("User activated");
+		} catch (error) {
+			setLoading(false);
+			toast.error("Error activating user");
+			console.log(error);
+		}
+	};
+	const handleSuspend = async (id) => {
+		try {
+			const confirm = window.confirm("Are you sure you want to suspend?");
+			if (!confirm) return;
+			setLoading(true);
+			const docRef = doc(db, "Users", id);
+			await updateDoc(docRef, {
+				status: "suspended",
+			});
+			setLoading(false);
+			toast.success("User Suspended");
+		} catch (error) {
+			setLoading(false);
+			toast.error("Error suspending user");
+			console.log(error);
+		}
 	};
 	return (
 		<div>
@@ -75,7 +128,12 @@ const AppProfessionals = () => {
 					{users ? (
 						<Grid container spacing={2}>
 							<Grid item xs={12}>
-								<Professional data={users} />
+								<Professional
+									data={users}
+									handleSuspend={handleSuspend}
+									handleActivate={handleActivate}
+									handleDelete={handleDelete}
+								/>
 							</Grid>
 						</Grid>
 					) : (

@@ -70,7 +70,7 @@ export default function BookingData({ data }) {
 										Customer Name:{" "}
 									</Typography>
 									<Typography fontSize={16} fontWeight={"400"} color={"gray"}>
-										{booking.customer_name ? booking.customer_name : "John Doe"}
+										{booking.customerName ? booking.customerName : "John Doe"}
 									</Typography>
 								</Box>
 							</Grid>
@@ -456,7 +456,7 @@ export default function BookingData({ data }) {
 									Cleaning Date:{" "}
 								</Typography>
 								<Typography fontSize={16} fontWeight={"400"} color={"gray"}>
-									{moment(booking.date).format("DD-MM-YYYY")}
+									{moment(booking.date).format("MMMM Do YYYY")}
 								</Typography>
 							</Box>
 						</Grid>
@@ -473,7 +473,7 @@ export default function BookingData({ data }) {
 									</Typography>
 									<Typography fontSize={16} fontWeight={"400"} color={"gray"}>
 										{moment(booking.delayDate.seconds * 1000).format(
-											"DD-MM-YYYY"
+											"MMMM Do YYYY"
 										)}
 									</Typography>
 								</Box>
@@ -495,7 +495,9 @@ export default function BookingData({ data }) {
 									Created Date:{" "}
 								</Typography>
 								<Typography fontSize={16} fontWeight={"400"} color={"gray"}>
-									{moment(booking.created_at).format("DD-MM-YYYY")}
+									{moment(booking.createdAt.seconds * 1000).format(
+										"MMMM Do YYYY"
+									)}
 								</Typography>
 							</Box>
 						</Grid>

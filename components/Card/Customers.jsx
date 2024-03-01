@@ -7,22 +7,38 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import { Avatar } from "@mui/material";
+import { Avatar, Box, Button } from "@mui/material";
 import { Person } from "@mui/icons-material";
+import { useRouter } from "next/router";
 
 const columns = [
 	{ id: "image", label: "Image", minWidth: 170 },
 	{ id: "name", label: "Name", minWidth: 170 },
 	{ id: "email", label: "Email", minWidth: 200 },
 	{ id: "phone", label: "Phone", minWidth: 200 },
+	{ id: "status", label: "Status", minWidth: 200 },
+	{ id: "action", label: "Action", minWidth: 200 },
 ];
 
-export default function Customers({ data }) {
-	function createData(image, name, email, phone, action) {
-		return { image, name, email, phone, action };
+export default function Customers({
+	data,
+	handleSuspend,
+	handleActivate,
+	handleDelete,
+}) {
+	const route = useRouter();
+	function createData(image, name, email, phone, status, action) {
+		return { image, name, email, phone, status, action };
 	}
 	const row = data?.map((item) =>
-		createData(item.image, item.name, item.email, item.phone, item.key)
+		createData(
+			item.image,
+			item.name,
+			item.email,
+			item.phone,
+			item.suspended ? "suspended" : "working",
+			item.key
+		)
 	);
 	const rows = row;
 	const [page, setPage] = React.useState(0);
@@ -82,6 +98,52 @@ export default function Customers({ data }) {
 														)
 													) : column.id === "phone" ? (
 														"+27-" + value
+													) : column.id === "action" ? (
+														<Box display={"flex"} gap={1}>
+															<Button
+																variant="contained"
+																color="primary"
+																size="small"
+																sx={{ textTransform: "none" }}
+																onClick={() =>
+																	route.push(
+																		"/dashboard/customers/ViewDetail/" + value
+																	)
+																}
+															>
+																View
+															</Button>
+															{row.status === "suspended" ? (
+																<Button
+																	variant="contained"
+																	color="success"
+																	size="small"
+																	sx={{ textTransform: "none" }}
+																	onClick={() => handleActivate(value)}
+																>
+																	Activate
+																</Button>
+															) : (
+																<Button
+																	variant="contained"
+																	color="warning"
+																	size="small"
+																	sx={{ textTransform: "none" }}
+																	onClick={() => handleSuspend(value)}
+																>
+																	Suspend
+																</Button>
+															)}
+															<Button
+																variant="contained"
+																color="error"
+																size="small"
+																sx={{ textTransform: "none" }}
+																onClick={() => handleDelete(value)}
+															>
+																Delete
+															</Button>
+														</Box>
 													) : (
 														value
 													)}

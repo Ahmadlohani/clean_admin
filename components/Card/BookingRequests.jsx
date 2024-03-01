@@ -10,20 +10,21 @@ import TableRow from "@mui/material/TableRow";
 import { Avatar, Button, IconButton, Typography } from "@mui/material";
 import { CheckCircle, Person, PictureAsPdf } from "@mui/icons-material";
 import Link from "next/link";
+import moment from "moment";
 
 const columns = [
-	{ id: "customer_name", label: "Customer Name", minWidth: 150 },
+	{ id: "customerName", label: "Customer Name", minWidth: 150 },
 	{ id: "address", label: "Address", minWidth: 170 },
 	{ id: "date", label: "Cleaning Date", minWidth: 200 },
 	{ id: "status", label: "Status", minWidth: 150 },
-	{ id: "cost", label: "Total Cost", minWidth: 200 },
-	{ id: "action", label: "Action", minWidth: 200 },
+	{ id: "cost", label: "Total Cost", minWidth: 120 },
+	{ id: "action", label: "Action", minWidth: 100 },
 ];
 
 export default function BookingRequests({ data }) {
-	function createData(customer_name, address, date, status, cost, action) {
+	function createData(customerName, address, date, status, cost, action) {
 		return {
-			customer_name,
+			customerName,
 			address,
 			date,
 			status,
@@ -35,11 +36,11 @@ export default function BookingRequests({ data }) {
 		data &&
 		data?.map((item) =>
 			createData(
-				item.customer_name ? item.customer_name : "John Doe",
+				item.customerName ? item.customerName : "John Doe",
 				item.location.address,
-				item.date,
+				moment(new Date(item.date)).format("MMMM Do YYYY"),
 				item.status,
-				item.totalCost ? item.totalCost : 0,
+				item.cost ? item.cost : 0,
 				item.key
 			)
 		);

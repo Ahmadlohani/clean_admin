@@ -18,7 +18,7 @@ import dayjs from "dayjs";
 
 const SetPricing = () => {
 	const route = useRouter();
-	const { suburbId, suburb } = route.query;
+	const { suburbId } = route.query;
 	const [promoVisible, setPromoVisible] = useState(false);
 	const loaderImage = "/images/loader.gif";
 	const [promo, setPromo] = useState({
@@ -35,13 +35,17 @@ const SetPricing = () => {
 		bin: 0,
 		ironing: 0,
 		appCommission: 0,
+		city: "",
+		suburb: "",
+		newSuburbId: "",
+		postal: 0,
 	});
 	const [loading, setLoading] = useState(false);
 	useEffect(() => {
-		if (suburbId && suburb) {
+		if (suburbId) {
 			getPricing();
 		}
-	}, [suburbId && suburb]);
+	}, [suburbId]);
 	const getPricing = async () => {
 		try {
 			setLoading(true);
@@ -66,6 +70,9 @@ const SetPricing = () => {
 					bin: docSnap.data().bin,
 					ironing: docSnap.data().ironing,
 					appCommission: docSnap.data().appCommission,
+					city: docSnap.data().city,
+					suburb: docSnap.data().suburb,
+					postal: docSnap.data().postal,
 				});
 			}
 			setLoading(false);
@@ -75,6 +82,11 @@ const SetPricing = () => {
 		}
 	};
 	const handleChange = async (name, value) => {
+		if (name === "suburb") {
+			let uniqueSuburb = value.toLowerCase().replace(/\s/g, "");
+			setDetail({ ...detail, newSuburbId: uniqueSuburb, suburb: value });
+			return;
+		}
 		setDetail({ ...detail, [name]: value });
 	};
 	const handlePromoChange = async (name, value) => {
@@ -83,22 +95,27 @@ const SetPricing = () => {
 	const handleSubmit = async () => {
 		try {
 			setLoading(true);
-			const priceRef = doc(db, "Pricing", suburbId);
-			const docSnap = await getDoc(priceRef);
-			if (docSnap.exists()) {
-				await updateDoc(priceRef, {
-					oneBedroomPrice: detail.oneBedroomPrice,
-					oneBathroomPrice: detail.oneBathroomPrice,
-					bedPerInc: detail.bedPerInc,
-					bathPerInc: detail.bathPerInc,
-					laundry: detail.laundry,
-					bin: detail.bin,
-					ironing: detail.ironing,
-					appCommission: detail.appCommission,
-					suburb: suburb,
-				});
+			if (suburbId) {
+				const priceRef = doc(db, "Pricing", suburbId);
+				const docSnap = await getDoc(priceRef);
+				if (docSnap.exists()) {
+					await updateDoc(priceRef, {
+						oneBedroomPrice: detail.oneBedroomPrice,
+						oneBathroomPrice: detail.oneBathroomPrice,
+						bedPerInc: detail.bedPerInc,
+						bathPerInc: detail.bathPerInc,
+						laundry: detail.laundry,
+						bin: detail.bin,
+						ironing: detail.ironing,
+						appCommission: detail.appCommission,
+						suburb: detail.suburb,
+						city: detail.city,
+						postal: detail.postal,
+					});
+				}
 			} else {
-				await setDoc(priceRef, {
+				const newPriceRef = doc(db, "Pricing", detail.newSuburbId);
+				await setDoc(newPriceRef, {
 					oneBedroomPrice: detail.oneBedroomPrice,
 					oneBathroomPrice: detail.oneBathroomPrice,
 					bedPerInc: detail.bedPerInc,
@@ -107,7 +124,9 @@ const SetPricing = () => {
 					bin: detail.bin,
 					ironing: detail.ironing,
 					appCommission: detail.appCommission,
-					suburb: suburb,
+					suburb: detail.suburb,
+					city: detail.city,
+					postal: detail.postal,
 				});
 			}
 			setLoading(false);
@@ -167,12 +186,6 @@ const SetPricing = () => {
 			console.log(error);
 		}
 	};
-	const handleDaysLeft = () => {
-		const currentDate = moment();
-		const promoExpiryDate = moment(promo.promoDate.seconds * 1000);
-		const daysLeft = promoExpiryDate.diff(currentDate, "day");
-		return daysLeft;
-	};
 	return (
 		<div>
 			{loading && (
@@ -204,7 +217,7 @@ const SetPricing = () => {
 						fontWeight={"bold"}
 						fontSize={20}
 					>
-						{suburb} Pricing
+						Set Pricing
 					</Typography>
 					{
 						<Grid container borderRadius={1}>
@@ -258,15 +271,6 @@ const SetPricing = () => {
 													</Typography>
 												</Typography>
 											</Box>
-											<Typography
-												variant="h6"
-												display={"flex"}
-												alignItems={"center"}
-												gap={2}
-											>
-												Days Left:{" "}
-												<Typography variant="h5">{handleDaysLeft()}</Typography>
-											</Typography>
 											<Button
 												variant="contained"
 												color="error"
@@ -281,7 +285,7 @@ const SetPricing = () => {
 							)}
 						</Grid>
 					}
-					{!promoVisible && (
+					{!promoVisible && suburbId && (
 						<Grid
 							container
 							bgcolor={"lightgray"}

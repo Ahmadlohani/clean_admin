@@ -13,27 +13,19 @@ import {
 	TableRow,
 	Typography,
 } from "@mui/material";
-import {
-	collection,
-	getDocs,
-	onSnapshot,
-	orderBy,
-	query,
-	where,
-} from "firebase/firestore";
+import { collection, onSnapshot, query } from "firebase/firestore";
 import { db } from "../../../firebase";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 const columns = [
+	{ id: "city", label: "City", minWidth: 300 },
 	{ id: "suburb", label: "Suburb", minWidth: 300 },
 	{ id: "action", label: "Action", minWidth: 200 },
 ];
 const Pricing = () => {
 	const route = useRouter();
-	const [doneAreas, setDoneAreas] = useState([]);
-	const [pendingAreas, setPendingAreas] = useState([]);
+	const [areas, setAreas] = useState([]);
 	const [loading, setLoading] = useState(false);
-	const [mode, setMode] = useState("done");
 	const [page, setPage] = useState(0);
 	const [rowsPerPage, setRowsPerPage] = useState(10);
 	const loaderImage = "/images/loader.gif";
@@ -45,71 +37,28 @@ const Pricing = () => {
 		onSnapshot(suburbs, (querySnapshot) => {
 			setLoading(true);
 			let items = [];
-			let doneSubsArray = [];
 			if (querySnapshot.size == 0) {
 				setLoading(false);
-				setDoneAreas([]);
+				setAreas([]);
 			} else {
 				querySnapshot.forEach((doc) => {
 					items.push({
 						suburbId: doc.id,
 						suburb: doc.data().suburb,
+						city: doc.data().city,
 					});
-					doneSubsArray.push(doc.id);
 				});
-				setDoneAreas(items);
+				setAreas(items);
 				setLoading(false);
 			}
-			checkPending(doneSubsArray);
 		});
 	};
-	const checkPending = async (doneSubsArray) => {
-		try {
-			const users = query(
-				collection(db, "Users"),
-				where("role", "==", "customer"),
-				orderBy("createdAt", "desc")
-			);
-			const querySnapshot = await getDocs(users);
-			let pendingItems = [];
-			querySnapshot.forEach((doc) => {
-				if (doc.data().suburb && doc.data().suburbId) {
-					const existArray = doneSubsArray.filter((item) => {
-						if (item == doc.data().suburbId) {
-							return true;
-						}
-					});
-					if (Object.keys(existArray).length == 0) {
-						if (Object.keys(pendingItems).length > 0) {
-							pendingItems.forEach((item) => {
-								if (item.suburbId != doc.data().suburbId) {
-									pendingItems.push({
-										suburb: doc.data().suburb,
-										suburbId: doc.data().suburbId,
-									});
-								}
-							});
-						} else {
-							pendingItems.push({
-								suburb: doc.data().suburb,
-								suburbId: doc.data().suburbId,
-							});
-						}
-					}
-				}
-			});
-			setPendingAreas(pendingItems);
-		} catch (error) {
-			console.log(error);
-		}
-	};
-	function createData(suburb, action) {
-		return { suburb, action };
+	function createData(city, suburb, action) {
+		return { city, suburb, action };
 	}
-	const row =
-		mode == "done"
-			? doneAreas?.map((item) => createData(item.suburb, item.suburbId))
-			: pendingAreas?.map((item) => createData(item.suburb, item.suburbId));
+	const row = areas?.map((item) =>
+		createData(item.city, item.suburb, item.suburbId)
+	);
 	const rows = row;
 
 	const handleChangePage = (event, newPage) => {
@@ -119,11 +68,6 @@ const Pricing = () => {
 	const handleChangeRowsPerPage = (event) => {
 		setRowsPerPage(+event.target.value);
 		setPage(0);
-	};
-	const handlefilterCities = (mode) => {
-		setLoading(true);
-		setMode(mode);
-		setLoading(false);
 	};
 	return (
 		<div>
@@ -164,23 +108,15 @@ const Pricing = () => {
 						</Typography>
 						<Box display={"flex"} alignItems={"center"} gap={1}>
 							<Button
-								variant={mode == "done" ? "contained" : "outlined"}
+								variant={"contained"}
 								color="success"
-								onClick={() => handlefilterCities("done")}
+								onClick={() => route.push(`/dashboard/Pricing/SetPricing`)}
 							>
-								Completed
-							</Button>
-							<Button
-								variant={mode == "pending" ? "contained" : "outlined"}
-								color="warning"
-								onClick={() => handlefilterCities("pending")}
-							>
-								Pending
+								Add More
 							</Button>
 						</Box>
 					</Box>
-					{(mode == "done" && Object.keys(doneAreas).length > 0) ||
-					(mode == "pending" && Object.keys(pendingAreas).length > 0) ? (
+					{Object.keys(areas).length > 0 ? (
 						<Grid container>
 							<Grid item xs={12}>
 								<Paper sx={{ width: "100%", overflow: "hidden" }}>
@@ -227,13 +163,11 @@ const Pricing = () => {
 																					variant="contained"
 																					onClick={() =>
 																						route.push(
-																							`/dashboard/Pricing/SetPricing?suburbId=${value}&suburb=${row.suburb}`
+																							`/dashboard/Pricing/SetPricing?suburbId=${value}`
 																						)
 																					}
 																				>
-																					{mode == "done"
-																						? "Update Pricing"
-																						: "Set Pricing"}
+																					Update Pricing
 																				</Button>
 																			) : (
 																				value
