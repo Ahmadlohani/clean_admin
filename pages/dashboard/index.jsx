@@ -10,7 +10,7 @@ const index = () => {
 						Welcome to Admin Dashboard
 					</Typography>
 					<Typography variant="h6" component="h6">
-						Make decisions based on the data
+						Make decisions based on the data provided
 					</Typography>
 				</Box>
 			</AppDrawer>
